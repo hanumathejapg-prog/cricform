@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CricForm — Project Specification Document</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;700;800&display=swap');
+
+  :root {
+    --green-dark: #1B5E20;
+    --green: #2E7D32;
+    --green-mid: #388E3C;
+    --green-light: #A5D6A7;
+    --green-pale: #E8F5E9;
+    --green-subtle: #F1F8E9;
+    --accent: #00E676;
+    --purple: #7C4DFF;
+    --dark: #0D1117;
+    --dark2: #161B22;
+    --dark3: #21262D;
+    --border: #30363D;
+    --text: #E6EDF3;
+    --text-muted: #8B949E;
+    --code-bg: #0D1117;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.7;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0;
+    width: 260px; height: 100vh;
+    background: var(--dark2);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 100;
+    padding: 24px 0;
+  }
+
+  .sidebar-logo {
+    padding: 0 20px 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .sidebar-logo .logo-text {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+  }
+
+  .sidebar-logo .logo-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: var(--mono);
+    margin-top: 2px;
+  }
+
+  .nav-section {
+    padding: 8px 20px 4px;
+    font-size: 10px;
+    font-family: var(--mono);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  .nav-item {
+    display: block;
+    padding: 7px 20px;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+    font-family: var(--mono);
+  }
+
+  .nav-item:hover, .nav-item.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    background: rgba(0,230,118,0.05);
+  }
+
+  .nav-item span {
+    color: var(--green-light);
+    margin-right: 6px;
+  }
+
+  /* ── MAIN ── */
+  .main {
+    margin-left: 260px;
+    min-height: 100vh;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #0D1117 0%, #1B5E20 50%, #0D1117 100%);
+    padding: 80px 60px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '🏏';
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 140px;
+    opacity: 0.08;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: rgba(0,230,118,0.1);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+  }
+
+  .hero h1 {
+    font-size: 56px;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -2px;
+    margin-bottom: 16px;
+  }
+
+  .hero h1 em {
+    color: var(--accent);
+    font-style: normal;
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+    max-width: 600px;
+  }
+
+  .tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tech-badge {
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 6px;
+  }
+
+  /* ── CONTENT ── */
+  .content {
+    padding: 48px 60px;
+    max-width: 1000px;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 64px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-num {
+    background: var(--green);
+    color: white;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--green-light);
+    margin: 28px 0 12px;
+    letter-spacing: -0.3px;
+  }
+
+  h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    font-family: var(--mono);
+    margin: 20px 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  p {
+    font-size: 14.5px;
+    color: #C9D1D9;
+    margin-bottom: 12px;
+    line-height: 1.8;
+  }
+
+  /* ── CODE BLOCKS ── */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--purple);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 12px 0 20px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: #E6EDF3;
+    white-space: pre;
+  }
+
+  .code-block.formula {
+    border-left-color: var(--accent);
+    background: rgba(0,230,118,0.03);
+  }
+
+  .code-block.json {
+    border-left-color: #FDD835;
+    color: #FDD835;
+  }
+
+  /* ── INFO TABLE ── */
+  .info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 20px;
+    font-size: 13.5px;
+  }
+
+  .info-table th {
+    background: var(--green);
+    color: white;
+    padding: 10px 14px;
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .info-table td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.6;
+  }
+
+  .info-table tr:nth-child(even) td {
+    background: var(--dark2);
+  }
+
+  .info-table tr:hover td {
+    background: rgba(0,230,118,0.04);
+  }
+
+  .info-table td:first-child {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--green-light);
+    white-space: nowrap;
+    width: 35%;
+  }
+
+  /* ── BULLET LIST ── */
+  .bullet-list {
+    list-style: none;
+    margin: 8px 0 16px;
+  }
+
+  .bullet-list li {
+    padding: 5px 0 5px 20px;
+    position: relative;
+    font-size: 14px;
+    color: #C9D1D9;
+    line-height: 1.7;
+  }
+
+  .bullet-list li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  /* ── PHASE CARDS ── */
+  .phase-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0;
+  }
+
+  .phase-card {
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+
+  .phase-card:hover {
+    border-color: var(--green-mid);
+  }
+
+  .phase-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+  }
+
+  .phase-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+
+  .phase-card ul {
+    list-style: none;
+  }
+
+  .phase-card ul li {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    padding: 3px 0 3px 14px;
+    position: relative;
+    font-family: var(--mono);
+  }
+
+  .phase-card ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--green-light);
+    font-size: 11px;
+  }
+
+  /* ── ALGORITHM CARD ── */
+  .algo-card {
+    background: linear-gradient(135deg, rgba(0,230,118,0.05), rgba(124,77,255,0.05));
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 16px 0;
+  }
+
+  .algo-title {
+    font-size: 13px;
+    font-family: var(--mono);
+    color: var(--accent);
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── INLINE CODE ── */
+  code {
+    background: var(--dark3);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  /* ── CALLOUT ── */
+  .callout {
+    background: rgba(0,230,118,0.08);
+    border: 1px solid rgba(0,230,118,0.3);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 13.5px;
+    color: #C9D1D9;
+  }
+
+  .callout strong {
+    color: var(--accent);
+  }
+
+  /* ── MULTIPLIER TABLE ── */
+  .mult-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+
+  .mult-table th {
+    background: var(--dark3);
+    color: var(--text-muted);
+    padding: 8px 12px;
+    text-align: left;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+  }
+
+  .mult-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .mult-table td:last-child {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--dark2); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ── FOOTER ── */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 60px;
+    margin-left: 260px;
+    text-align: center;
+    color: var(--text-muted);
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  @media print {
+    .sidebar { display: none; }
+    .main, .footer { margin-left: 0; }
+    .hero { padding: 40px; }
+    .content { padding: 32px 40px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">🏏 CricForm</div>
+    <div class="logo-sub">v1.0 · Project Spec</div>
+  </div>
+  <div class="nav-section">Sections</div>
+  <a href="#s1" class="nav-item"><span>01</span> Overview</a>
+  <a href="#s2" class="nav-item"><span>02</span> Batter Algorithm</a>
+  <a href="#s3" class="nav-item"><span>03</span> Bowler Algorithm</a>
+  <a href="#s4" class="nav-item"><span>04</span> Edge Cases</a>
+  <a href="#s5" class="nav-item"><span>05</span> Data Source</a>
+  <a href="#s6" class="nav-item"><span>06</span> Backend</a>
+  <a href="#s7" class="nav-item"><span>07</span> Database</a>
+  <a href="#s8" class="nav-item"><span>08</span> Redis Cache</a>
+  <a href="#s9" class="nav-item"><span>09</span> Scheduler</a>
+  <a href="#s10" class="nav-item"><span>10</span> Frontend</a>
+  <a href="#s11" class="nav-item"><span>11</span> Build Order</a>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">FULL-STACK PROJECT SPECIFICATION</div>
+    <h1><em>CricForm</em><br/>Player Form Tracker</h1>
+    <p class="hero-sub">A cricket analytics platform that computes a proprietary Form Score (0–100) for every active international cricketer — judging players against the quality of opposition they faced.</p>
+    <div class="tech-stack">
+      <span class="tech-badge">Java 17</span>
+      <span class="tech-badge">Spring Boot 3.x</span>
+      <span class="tech-badge">React 18</span>
+      <span class="tech-badge">MySQL 8</span>
+      <span class="tech-badge">Redis</span>
+      <span class="tech-badge">RapidAPI Cricbuzz</span>
+      <span class="tech-badge">Maven</span>
+      <span class="tech-badge">JUnit 5</span>
+      <span class="tech-badge">Swagger/OpenAPI</span>
+      <span class="tech-badge">Tailwind CSS</span>
+      <span class="tech-badge">Recharts</span>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- SECTION 1 -->
+    <div class="section" id="s1">
+      <div class="section-header">
+        <div class="section-num">01</div>
+        <div class="section-title">Project Overview & Vision</div>
+      </div>
+
+      <h2>1.1 What is CricForm?</h2>
+      <p>CricForm is a full-stack cricket analytics platform that computes a proprietary <strong>Form Score (0–100)</strong> for every active international cricketer. Unlike existing platforms such as Cricbuzz or ESPNcricinfo that display raw statistics, CricForm <em>interprets</em> those statistics using a weighted algorithm that accounts for recency, format, bowling/batting opposition quality, match context, and consistency.</p>
+
+      <h2>1.2 The Core Differentiator</h2>
+      <div class="callout">
+        <strong>No cricket website publishes a single "form score" number with breakdown.</strong> They show data — you interpret it yourself. We do the interpretation systematically, consistently, for every player. The algorithm is the product.
+      </div>
+
+      <table class="info-table">
+        <tr><th>Problem</th><th>Solution</th></tr>
+        <tr><td>Raw stats only, user interprets manually</td><td>CricForm Form Score: one number, 0–100, fully explained</td></tr>
+        <tr><td>Same runs against AFG vs AUS treated equally</td><td>Bowling Attack Multiplier adjusts for opposition quality</td></tr>
+        <tr><td>Inconsistent players look same as consistent ones</td><td>Consistency Bonus based on standard deviation</td></tr>
+        <tr><td>World Cup final treated same as dead rubber</td><td>Match Context Multiplier (1.3x for finals)</td></tr>
+      </table>
+
+      <h2>1.3 Tech Stack</h2>
+      <table class="info-table">
+        <tr><th>Layer</th><th>Technology</th></tr>
+        <tr><td>Frontend</td><td>React 18 + Tailwind CSS + Recharts</td></tr>
+        <tr><td>Backend</td><td>Java 17 + Spring Boot 3.x + Maven</td></tr>
+        <tr><td>Database</td><td>MySQL 8.x — persistent player data, match history, form scores</td></tr>
+        <tr><td>Cache</td><td>Redis — form scores cached with 24hr TTL</td></tr>
+        <tr><td>Scheduler</td><td>Spring @Scheduled — daily job at midnight IST</td></tr>
+        <tr><td>Data Source</td><td>RapidAPI — Cricbuzz Cricket API (real live data)</td></tr>
+        <tr><td>API Docs</td><td>Swagger / OpenAPI 3.0</td></tr>
+        <tr><td>Testing</td><td>JUnit 5 + Mockito</td></tr>
+      </table>
+
+      <h2>1.4 Core Features</h2>
+      <ul class="bullet-list">
+        <li><strong>Leaderboard Page:</strong> Top 10 in-form batsmen and Top 10 in-form bowlers, filterable by T20I / ODI / Test</li>
+        <li><strong>Player Profile Page:</strong> Individual Form Score with breakdown — bar chart of last 10 matches, consistency rating, format-wise scores</li>
+        <li><strong>Search:</strong> Search any player by name, get current Form Score instantly</li>
+        <li><strong>Format Filter:</strong> Switch between T20I, ODI, Test leaderboards</li>
+        <li><strong>Staleness Indicator:</strong> Yellow warning if data is older than 26 hours</li>
+        <li><strong>All-Rounder View:</strong> Players like Jadeja show both batter and bowler scores side-by-side</li>
+      </ul>
+    </div>
+
+    <!-- SECTION 2 -->
+    <div class="section" id="s2">
+      <div class="section-header">
+        <div class="section-num">02</div>
+        <div class="section-title">Algorithm: Batter Form Score</div>
+      </div>
+
+      <h2>2.1 Philosophy</h2>
+      <p>The Batter Form Score judges a player purely on <strong>how they performed against the quality of opposition they faced</strong>. External conditions (pitch, venue, weather) are deliberately excluded. We judge the player, not the conditions.</p>
+      <p>Key insight: <strong>match-sequence weighting instead of time-based weighting.</strong> A player rested for 2 months should not be penalized. We only care about their last N matches played, regardless of when those matches occurred.</p>
+
+      <h2>2.2 Complete Formula</h2>
+      <div class="code-block formula">BatterFormScore =
+  NORMALIZE_0_100(
+    SUM over last N matches of:
+      RunsScored
+      x SequenceWeight(matchRank)
+      x FormatMultiplier(format)
+      x BowlingAttackMultiplier(matchId)
+      x MatchContextMultiplier(matchType)
+      + ConsistencyBonus(lastNScores)
+  )</div>
+
+      <h2>2.3 Sequence Weight</h2>
+      <p>Most recent match = rank 1. Weight decreases linearly. Never goes to zero.</p>
+      <div class="code-block formula">SequenceWeight(rank) = 1.0 - ((rank - 1) * 0.1)
+
+rank 1  (most recent) = 1.0
+rank 2                = 0.9
+rank 3                = 0.8
+rank 4                = 0.7
+rank 5                = 0.6
+rank 6                = 0.5
+rank 7                = 0.4
+rank 8                = 0.3
+rank 9                = 0.2
+rank 10 (oldest)      = 0.1
+
+Default N = 10. UI allows N = 5 or N = 15.</div>
+
+      <h2>2.4 Format Multiplier</h2>
+      <table class="mult-table">
+        <tr><th>Format</th><th>Multiplier</th><th>Reason</th></tr>
+        <tr><td>T20I</td><td>1.3</td><td>Scoring quickly in T20 is hardest — higher reward</td></tr>
+        <tr><td>ODI</td><td>1.1</td><td>Run rate pressure adds difficulty</td></tr>
+        <tr><td>Test</td><td>1.0</td><td>Base multiplier</td></tr>
+      </table>
+
+      <h2>2.5 Bowling Attack Multiplier (Core Innovation)</h2>
+      <p>Not all runs are equal. Runs scored against a peak bowling attack are worth more than runs scored against a weak attack. The Bowling Attack Score uses bowlers' own form at the time of that match (their last 5 matches before this game).</p>
+      <div class="code-block formula">BowlingAttackScore(matchId) =
+  AVERAGE of BowlerFormScore(bowlerId, asOfMatchDate)
+  for each bowler who bowled in matchId
+
+BowlingAttackMultiplier:
+  Score &lt; 30   →  0.8  (weak attack)
+  Score 30-45  →  0.9
+  Score 45-60  →  1.0  (average attack)
+  Score 60-75  →  1.1
+  Score 75-85  →  1.2
+  Score &gt; 85   →  1.3  (elite attack)</div>
+
+      <h2>2.6 Match Context Multiplier</h2>
+      <table class="mult-table">
+        <tr><th>Match Type</th><th>Multiplier</th></tr>
+        <tr><td>World Cup Final / ICC Final</td><td>1.3</td></tr>
+        <tr><td>Knockout / Semi-Final</td><td>1.2</td></tr>
+        <tr><td>Regular Group Stage</td><td>1.0</td></tr>
+        <tr><td>Dead Rubber (series decided)</td><td>0.8</td></tr>
+      </table>
+
+      <h2>2.7 Consistency Bonus</h2>
+      <p>A player scoring 38, 41, 39, 42, 40 is more valuable than one scoring 90, 4, 80, 2, 3. Measured using standard deviation of last N scores.</p>
+      <div class="code-block formula">StdDev = standard deviation of RunsScored across last N matches
+
+ConsistencyBonus:
+  StdDev &lt; 10  →  +10 points (extremely consistent)
+  StdDev 10-20 →  +7  points
+  StdDev 20-30 →  +4  points
+  StdDev 30-40 →  +2  points
+  StdDev &gt; 40  →  +0  points</div>
+
+      <h2>2.8 Normalization & Caps</h2>
+      <div class="code-block formula">NormalizedScore =
+  ((RawScore - MinRawScore) / (MaxRawScore - MinRawScore)) * 100
+
+Hard cap: score cannot exceed 100 or go below 0
+Multiplier stack cap: total combined multipliers capped at 2.0x per match</div>
+
+      <h2>2.9 Recursive Calculation Order</h2>
+      <ul class="bullet-list">
+        <li><strong>Step 1:</strong> Calculate ALL bowler scores using raw bowling stats only (no batter dependency). This is Iteration 0.</li>
+        <li><strong>Step 2:</strong> Using Iteration 0 bowler scores, calculate ALL batter scores. This is Iteration 1.</li>
+        <li><strong>Step 3:</strong> Using Iteration 1 batter scores, recalculate ALL bowler scores. This is Iteration 2.</li>
+        <li><strong>Step 4:</strong> STOP. Do NOT iterate further. 2 iterations is sufficient. Prevents infinite loops.</li>
+        <li><strong>Step 5:</strong> Store final scores to MySQL and cache in Redis.</li>
+      </ul>
+    </div>
+
+    <!-- SECTION 3 -->
+    <div class="section" id="s3">
+      <div class="section-header">
+        <div class="section-num">03</div>
+        <div class="section-title">Algorithm: Bowler Form Score</div>
+      </div>
+
+      <h2>3.1 Complete Formula</h2>
+      <div class="code-block formula">BowlerFormScore =
+  NORMALIZE_0_100(
+    SUM over last N matches of:
+      MatchBowlingScore(matchId)
+      x SequenceWeight(matchRank)
+      x FormatMultiplier(format)
+      x BattingLineupMultiplier(matchId)
+      x MatchContextMultiplier(matchType)
+      + ConsistencyBonus(lastNMatchBowlingScores)
+  )</div>
+
+      <h2>3.2 Match Bowling Score</h2>
+      <p>A bowler's single match performance = wickets + economy + overs + maidens. Economy is phase-adjusted — death economy of 9.0 is acceptable, powerplay economy of 9.0 is terrible.</p>
+      <div class="code-block formula">MatchBowlingScore = WicketsComponent + EconomyComponent + OversComponent + MaidenBonus
+
+WicketsComponent = Wickets x WicketWeight
+  Bowled           = 15 pts  (hardest to achieve)
+  LBW              = 14 pts
+  Caught           = 12 pts
+  Stumped          = 10 pts  (batter error involved)
+  Run Out          =  0 pts  (not bowler's credit)
+
+EconomyComponent (by match phase):
+  Powerplay (overs 1-6):
+    Economy &lt; 5.0  →  30 pts
+    Economy 5-7    →  20 pts
+    Economy 7-9    →  10 pts
+    Economy &gt; 9   →   2 pts
+  Middle overs:
+    Economy &lt; 6.0  →  25 pts
+    Economy 6-8    →  15 pts
+    Economy 8-10   →   8 pts
+    Economy &gt; 10  →   2 pts
+  Death overs (16-20 T20 / 41-50 ODI):
+    Economy &lt; 8.0  →  30 pts  (exceptional)
+    Economy 8-10   →  18 pts
+    Economy 10-12  →  10 pts
+    Economy &gt; 12  →   3 pts
+  Test cricket:
+    Economy &lt; 3.0  →  30 pts
+    Economy 3-4    →  20 pts
+    Economy 4-5    →  10 pts
+    Economy &gt; 5   →   2 pts
+
+OversComponent:
+  Bowled full quota   →  +10 pts
+  Bowled 75%+ quota   →  +5  pts
+  Bowled &lt; 50% quota  →  +0  pts
+
+MaidenBonus = Maidens x 5 pts each</div>
+
+      <h2>3.3 Batting Lineup Multiplier</h2>
+      <p>Symmetric to BowlingAttackMultiplier. A bowler who dismisses in-form top batsmen gets higher credit.</p>
+      <div class="code-block formula">BattingLineupScore(matchId) =
+  AVERAGE of BatterFormScore(batterId, asOfMatchDate)
+  for each batter who batted in that innings
+
+Same multiplier scale: 0.8 (weak lineup) to 1.3 (elite lineup)</div>
+
+      <h2>3.4 All-Rounder Handling</h2>
+      <div class="code-block formula">AllRounderFormScore = (BatterFormScore x 0.5) + (BowlerFormScore x 0.5)
+
+Stored as: player.allRounderFormScore
+UI shows: both individual scores + combined score</div>
+    </div>
+
+    <!-- SECTION 4 -->
+    <div class="section" id="s4">
+      <div class="section-header">
+        <div class="section-num">04</div>
+        <div class="section-title">Edge Cases & Rules</div>
+      </div>
+
+      <h2>4.1 Batter Edge Cases</h2>
+
+      <h3>Minimum Matches Threshold</h3>
+      <ul class="bullet-list">
+        <li>Minimum 5 matches required to generate a valid Form Score</li>
+        <li>If fewer than 5: store formScore = null, display "Insufficient Data" on UI</li>
+        <li>Player still appears in search but not on leaderboard</li>
+      </ul>
+
+      <h3>Not Out Innings</h3>
+      <ul class="bullet-list">
+        <li>Not out innings (e.g., 45*) get a +5 bonus added to that match's contribution</li>
+        <li>Player preserved their wicket — has team value</li>
+        <li>Flag in DB: innings_not_out = true/false</li>
+      </ul>
+
+      <h3>Duck (Score = 0)</h3>
+      <ul class="bullet-list">
+        <li>Run out for 0: mild penalty — multiply that match score by 0.8</li>
+        <li>Bowled/LBW/Caught for 0: standard zero, no extra penalty</li>
+        <li>Consecutive ducks: std deviation increases, naturally lowers consistency bonus</li>
+      </ul>
+
+      <h3>Did Not Bat</h3>
+      <ul class="bullet-list">
+        <li>Match skipped entirely — not counted in last N matches window</li>
+        <li>Do not record this match in batting_innings table</li>
+      </ul>
+
+      <h3>Retired Hurt While Batting</h3>
+      <ul class="bullet-list">
+        <li>Player was attempting to bat and got injured — not their fault</li>
+        <li>Prorate their score: ActualScore / (BallsFaced / AverageInningsLength)</li>
+        <li>Set innings_retired_hurt = true in DB, apply +3 bonus for intent</li>
+      </ul>
+
+      <h3>Retired Hurt While Fielding</h3>
+      <ul class="bullet-list">
+        <li>Their batting innings was already complete</li>
+        <li>Count their batting innings fully — no modification</li>
+      </ul>
+
+      <h2>4.2 Bowler Edge Cases</h2>
+
+      <h3>Minimum Overs Threshold</h3>
+      <ul class="bullet-list">
+        <li>Bowled fewer than 1 complete over: skip that match entirely</li>
+        <li>Emergency over is not representative bowling performance</li>
+      </ul>
+
+      <h3>Did Not Bowl</h3>
+      <ul class="bullet-list">
+        <li>Skip that match entirely for bowling score</li>
+        <li>Do not record in bowling_innings table</li>
+      </ul>
+
+      <h3>Injured While Bowling Mid-Spell</h3>
+      <ul class="bullet-list">
+        <li>Count only completed overs (round down)</li>
+        <li>Do not penalize for not completing quota</li>
+        <li>Set innings_injury_withdrawal = true in DB</li>
+      </ul>
+
+      <h3>Injured Before Bowling</h3>
+      <ul class="bullet-list">
+        <li>Skip that match entirely for bowling score</li>
+      </ul>
+
+      <h2>4.3 Shared Rules</h2>
+
+      <h3>Format Separation</h3>
+      <ul class="bullet-list">
+        <li>T20I, ODI, Test Form Scores are always calculated SEPARATELY</li>
+        <li>Never mix formats in a single score calculation</li>
+        <li>Leaderboard has three separate tabs: T20I / ODI / Test</li>
+      </ul>
+
+      <h3>Inactive Player</h3>
+      <ul class="bullet-list">
+        <li>No matches in last 180 days: display "Out of Form Window"</li>
+        <li>Still searchable, profile shows last known score with date</li>
+      </ul>
+
+      <h3>Multiplier Stack Cap</h3>
+      <ul class="bullet-list">
+        <li>Maximum combined multiplier per match = 2.0x</li>
+        <li>Prevents World Cup final + peak bowling attack from inflating unrealistically</li>
+      </ul>
+    </div>
+
+    <!-- SECTION 5 -->
+    <div class="section" id="s5">
+      <div class="section-header">
+        <div class="section-num">05</div>
+        <div class="section-title">Data Source: RapidAPI Cricket</div>
+      </div>
+
+      <h2>5.1 API Details</h2>
+      <table class="info-table">
+        <tr><th>Property</th><th>Value</th></tr>
+        <tr><td>Provider</td><td>RapidAPI — Cricbuzz Cricket API</td></tr>
+        <tr><td>Base URL</td><td>https://cricbuzz-cricket.p.rapidapi.com</td></tr>
+        <tr><td>Auth Header 1</td><td>X-RapidAPI-Key: {YOUR_API_KEY}</td></tr>
+        <tr><td>Auth Header 2</td><td>X-RapidAPI-Host: cricbuzz-cricket.p.rapidapi.com</td></tr>
+        <tr><td>Free Tier</td><td>500 requests/month</td></tr>
+      </table>
+
+      <h2>5.2 Endpoints Used</h2>
+
+      <h3>Get Series List</h3>
+      <div class="code-block">GET /series/v1/international
+Fields used: seriesId, seriesName, seriesType, matchIds[]</div>
+
+      <h3>Get Match Scorecard</h3>
+      <div class="code-block">GET /mcenter/v1/{matchId}/scard
+Fields used:
+  innings[].batTeamDetails.batsmenData[]:
+    batId, batName, runs, balls, strikeRate, outDesc, notOut
+  innings[].bowlTeamDetails.bowlersData[]:
+    bowlId, bowlName, overs, maidens, runs, wickets, economy
+  innings[].wicketsData[]:
+    batId, wicketType</div>
+
+      <h3>Get Player Profile</h3>
+      <div class="code-block">GET /stats/v1/player/{playerId}
+Fields used: id, name, role, teamId, teamName</div>
+
+      <h3>Get Player Match History</h3>
+      <div class="code-block">GET /stats/v1/player/{playerId}/batting
+GET /stats/v1/player/{playerId}/bowling</div>
+
+      <h2>5.3 Sample API Response (Batting Innings)</h2>
+      <div class="code-block json">{
+  "batId": 1413,
+  "batName": "V Kohli",
+  "runs": 82,
+  "balls": 94,
+  "fours": 7,
+  "sixes": 1,
+  "strikeRate": 87.23,
+  "outDesc": "c Maxwell b Cummins",
+  "notOut": false
+}</div>
+
+      <h2>5.4 Sample API Response (Bowling Innings)</h2>
+      <div class="code-block json">{
+  "bowlId": 1081,
+  "bowlName": "Pat Cummins",
+  "overs": "9.2",
+  "maidens": 1,
+  "runs": 43,
+  "wickets": 2,
+  "economy": 4.61
+}</div>
+
+      <h2>5.5 Data Flow</h2>
+      <div class="code-block formula">1. Scheduler triggers at midnight IST
+2. Fetch list of all recent international series
+3. For each series, fetch all matchIds
+4. For each matchId, fetch full scorecard
+5. Parse scorecard: extract batting + bowling innings
+6. For each batsman: upsert batting_innings table
+7. For each bowler: upsert bowling_innings table
+8. After all data ingested: trigger FormScoreCalculationService
+9. Store calculated scores in player_form_scores table
+10. Invalidate Redis cache for all updated players
+11. Re-populate Redis with fresh scores</div>
+    </div>
+
+    <!-- SECTION 6 -->
+    <div class="section" id="s6">
+      <div class="section-header">
+        <div class="section-num">06</div>
+        <div class="section-title">Backend Architecture: Spring Boot</div>
+      </div>
+
+      <h2>6.1 Project Structure</h2>
+      <div class="code-block">cricform-backend/
+  src/main/java/com/cricform/
+    CricformApplication.java
+    config/
+      RedisConfig.java
+      SwaggerConfig.java
+      RestTemplateConfig.java
+    controller/
+      PlayerController.java
+      LeaderboardController.java
+      SearchController.java
+    service/
+      PlayerService.java
+      FormScoreService.java
+      BatterFormScoreService.java
+      BowlerFormScoreService.java
+      BowlingAttackScoreService.java
+      BattingLineupScoreService.java
+      CricketApiService.java
+      DataIngestionService.java
+      LeaderboardService.java
+      CacheService.java
+    scheduler/
+      DailyRefreshScheduler.java
+    repository/
+      PlayerRepository.java
+      BattingInningsRepository.java
+      BowlingInningsRepository.java
+      PlayerFormScoreRepository.java
+      MatchRepository.java
+    model/
+      Player.java
+      Match.java
+      BattingInnings.java
+      BowlingInnings.java
+      PlayerFormScore.java
+    dto/
+      PlayerFormScoreDTO.java
+      LeaderboardEntryDTO.java
+      PlayerProfileDTO.java
+      MatchPerformanceDTO.java
+    exception/
+      GlobalExceptionHandler.java
+      PlayerNotFoundException.java
+      ApiDataException.java
+  src/main/resources/
+    application.properties</div>
+
+      <h2>6.2 application.properties</h2>
+      <div class="code-block">spring.datasource.url=jdbc:mysql://localhost:3306/cricform
+spring.datasource.username=${DB_USERNAME}
+spring.datasource.password=${DB_PASSWORD}
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=false
+
+spring.redis.host=localhost
+spring.redis.port=6379
+spring.redis.password=${REDIS_PASSWORD}
+
+rapidapi.key=${RAPIDAPI_KEY}
+rapidapi.host=cricbuzz-cricket.p.rapidapi.com
+rapidapi.baseurl=https://cricbuzz-cricket.p.rapidapi.com
+
+cricform.default.window=10
+cricform.cache.ttl.hours=24
+cricform.scheduler.cron=0 0 0 * * *</div>
+
+      <h2>6.3 REST API Endpoints</h2>
+
+      <h3>PlayerController.java</h3>
+      <table class="info-table">
+        <tr><th>Endpoint</th><th>Description</th></tr>
+        <tr><td>GET /api/players/{id}/form</td><td>Get player form score. Params: ?format=T20I|ODI|Test&window=5|10|15</td></tr>
+        <tr><td>GET /api/players/{id}/profile</td><td>Full player profile with last N match breakdown</td></tr>
+        <tr><td>GET /api/players/{id}/history</td><td>Last N match performances as array</td></tr>
+      </table>
+
+      <h3>LeaderboardController.java</h3>
+      <table class="info-table">
+        <tr><th>Endpoint</th><th>Description</th></tr>
+        <tr><td>GET /api/leaderboard/batters</td><td>Top 10 in-form batters. Params: ?format=T20I|ODI|Test</td></tr>
+        <tr><td>GET /api/leaderboard/bowlers</td><td>Top 10 in-form bowlers. Params: ?format=T20I|ODI|Test</td></tr>
+        <tr><td>GET /api/leaderboard/allrounders</td><td>Top 10 all-rounders by combined score</td></tr>
+      </table>
+
+      <h3>SearchController.java</h3>
+      <table class="info-table">
+        <tr><th>Endpoint</th><th>Description</th></tr>
+        <tr><td>GET /api/search</td><td>Search players by name. Params: ?q={name}&limit=10</td></tr>
+      </table>
+
+      <h2>6.4 Key Service Method Signatures</h2>
+
+      <h3>BatterFormScoreService.java</h3>
+      <div class="code-block">public double calculateBatterFormScore(Long playerId, String format, int window)
+public double calculateSequenceWeight(int rank)
+public double getFormatMultiplier(String format)
+public double getMatchContextMultiplier(String matchType)
+public double calculateConsistencyBonus(List&lt;Integer&gt; scores)
+public double normalizeTo100(double rawScore, double minRaw, double maxRaw)
+public double applyMultiplierCap(double stackedMultiplier)</div>
+
+      <h3>BowlerFormScoreService.java</h3>
+      <div class="code-block">public double calculateBowlerFormScore(Long playerId, String format, int window)
+public double calculateMatchBowlingScore(BowlingInnings innings)
+public double getWicketWeight(String dismissalType)
+public double getEconomyScore(double economy, String matchPhase, String format)
+public double getOversComponent(double oversBowled, double fullQuota)
+public double calculateMaidenBonus(int maidens)</div>
+
+      <h3>CricketApiService.java</h3>
+      <div class="code-block">public List&lt;SeriesDTO&gt; fetchRecentInternationalSeries()
+public ScorecardDTO fetchMatchScorecard(Long matchId)
+public PlayerProfileDTO fetchPlayerProfile(Long playerId)
+public List&lt;Long&gt; fetchPlayerMatchIds(Long playerId, String type)</div>
+
+      <h2>6.5 DTO Structures</h2>
+
+      <h3>PlayerFormScoreDTO</h3>
+      <div class="code-block json">{
+  "playerId": 1413,
+  "playerName": "V Kohli",
+  "team": "India",
+  "role": "Batsman",
+  "t20iFormScore": 74.5,
+  "odiFormScore": 81.2,
+  "testFormScore": 68.9,
+  "lastUpdated": "2026-03-21T00:00:00",
+  "isStale": false,
+  "insufficientData": false
+}</div>
+
+      <h3>LeaderboardEntryDTO</h3>
+      <div class="code-block json">{
+  "rank": 1,
+  "playerId": 1413,
+  "playerName": "V Kohli",
+  "team": "India",
+  "formScore": 81.2,
+  "format": "ODI",
+  "trend": "UP"
+}</div>
+
+      <h3>MatchPerformanceDTO</h3>
+      <div class="code-block json">{
+  "matchId": 98765,
+  "opponent": "Australia",
+  "format": "ODI",
+  "matchType": "Final",
+  "date": "2026-02-15",
+  "runs": 82,
+  "balls": 94,
+  "notOut": false,
+  "weightedScore": 112.4,
+  "bowlingAttackScore": 78.2
+}</div>
+
+      <h2>6.6 GlobalExceptionHandler</h2>
+      <div class="code-block">@RestControllerAdvice
+public class GlobalExceptionHandler {
+  @ExceptionHandler(PlayerNotFoundException.class)
+  → returns 404 with { error: "Player not found", playerId: id }
+
+  @ExceptionHandler(ApiDataException.class)
+  → returns 503 with { error: "Cricket API unavailable, serving cached data" }
+
+  @ExceptionHandler(Exception.class)
+  → returns 500 with { error: "Internal server error" }
+}</div>
+    </div>
+
+    <!-- SECTION 7 -->
+    <div class="section" id="s7">
+      <div class="section-header">
+        <div class="section-num">07</div>
+        <div class="section-title">Database Design: MySQL Schema</div>
+      </div>
+
+      <h2>7.1 Tables Overview</h2>
+      <table class="info-table">
+        <tr><th>Table</th><th>Purpose</th></tr>
+        <tr><td>players</td><td>Master list of all international cricketers</td></tr>
+        <tr><td>matches</td><td>All ingested international matches</td></tr>
+        <tr><td>batting_innings</td><td>Each batting innings per player per match</td></tr>
+        <tr><td>bowling_innings</td><td>Each bowling innings per player per match</td></tr>
+        <tr><td>player_form_scores</td><td>Calculated form scores per player per format</td></tr>
+        <tr><td>bowling_attack_scores</td><td>Pre-computed bowling attack score per match</td></tr>
+        <tr><td>batting_lineup_scores</td><td>Pre-computed batting lineup score per match</td></tr>
+      </table>
+
+      <h2>7.2 Table: players</h2>
+      <table class="info-table">
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td>id</td><td>BIGINT PK</td><td>RapidAPI player ID</td></tr>
+        <tr><td>name</td><td>VARCHAR(100)</td><td>Full display name</td></tr>
+        <tr><td>team</td><td>VARCHAR(50)</td><td>Current international team</td></tr>
+        <tr><td>role</td><td>ENUM</td><td>BATSMAN / BOWLER / BATTING_ALLROUNDER / BOWLING_ALLROUNDER</td></tr>
+        <tr><td>is_active</td><td>BOOLEAN</td><td>True if played in last 180 days</td></tr>
+        <tr><td>created_at</td><td>TIMESTAMP</td><td>First ingestion date</td></tr>
+        <tr><td>updated_at</td><td>TIMESTAMP</td><td>Last updated timestamp</td></tr>
+      </table>
+
+      <h2>7.3 Table: matches</h2>
+      <table class="info-table">
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td>id</td><td>BIGINT PK</td><td>RapidAPI match ID</td></tr>
+        <tr><td>series_id</td><td>BIGINT</td><td>RapidAPI series ID</td></tr>
+        <tr><td>series_name</td><td>VARCHAR(150)</td><td>e.g. "ICC World Cup 2026"</td></tr>
+        <tr><td>match_type</td><td>ENUM</td><td>T20I / ODI / TEST</td></tr>
+        <tr><td>match_context</td><td>ENUM</td><td>FINAL / KNOCKOUT / GROUP / DEAD_RUBBER</td></tr>
+        <tr><td>team1</td><td>VARCHAR(50)</td><td>Team name</td></tr>
+        <tr><td>team2</td><td>VARCHAR(50)</td><td>Team name</td></tr>
+        <tr><td>match_date</td><td>DATE</td><td>Date of match</td></tr>
+        <tr><td>venue</td><td>VARCHAR(100)</td><td>Stadium name</td></tr>
+        <tr><td>ingested_at</td><td>TIMESTAMP</td><td>When we fetched this match</td></tr>
+      </table>
+
+      <h2>7.4 Table: batting_innings</h2>
+      <table class="info-table">
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td>id</td><td>BIGINT PK AUTO</td><td>Auto increment</td></tr>
+        <tr><td>player_id</td><td>BIGINT FK</td><td>References players.id</td></tr>
+        <tr><td>match_id</td><td>BIGINT FK</td><td>References matches.id</td></tr>
+        <tr><td>runs_scored</td><td>INT</td><td>Actual runs scored</td></tr>
+        <tr><td>balls_faced</td><td>INT</td><td>Balls faced in innings</td></tr>
+        <tr><td>strike_rate</td><td>DECIMAL(6,2)</td><td>Computed: runs/balls x 100</td></tr>
+        <tr><td>not_out</td><td>BOOLEAN</td><td>True if not dismissed</td></tr>
+        <tr><td>retired_hurt</td><td>BOOLEAN</td><td>True if retired hurt while batting</td></tr>
+        <tr><td>did_not_bat</td><td>BOOLEAN</td><td>True if DNB — skip in algorithm</td></tr>
+        <tr><td>dismissal_type</td><td>VARCHAR(30)</td><td>bowled/lbw/caught/stumped/runout/retired_hurt</td></tr>
+        <tr><td>match_sequence_rank</td><td>INT</td><td>1 = most recent</td></tr>
+        <tr><td>weighted_score</td><td>DECIMAL(8,2)</td><td>Computed weighted contribution</td></tr>
+        <tr><td>bowling_attack_score</td><td>DECIMAL(5,2)</td><td>Attack score at time of this match</td></tr>
+      </table>
+
+      <h2>7.5 Table: bowling_innings</h2>
+      <table class="info-table">
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td>id</td><td>BIGINT PK AUTO</td><td>Auto increment</td></tr>
+        <tr><td>player_id</td><td>BIGINT FK</td><td>References players.id</td></tr>
+        <tr><td>match_id</td><td>BIGINT FK</td><td>References matches.id</td></tr>
+        <tr><td>overs_bowled</td><td>DECIMAL(4,1)</td><td>e.g. 9.3 for 9 overs 3 balls</td></tr>
+        <tr><td>maidens</td><td>INT</td><td>Maiden overs bowled</td></tr>
+        <tr><td>runs_conceded</td><td>INT</td><td>Total runs given</td></tr>
+        <tr><td>wickets</td><td>INT</td><td>Wickets taken</td></tr>
+        <tr><td>economy</td><td>DECIMAL(5,2)</td><td>Runs per over</td></tr>
+        <tr><td>did_not_bowl</td><td>BOOLEAN</td><td>True if DNB — skip in algorithm</td></tr>
+        <tr><td>injury_withdrawal</td><td>BOOLEAN</td><td>True if injured mid-spell</td></tr>
+        <tr><td>match_sequence_rank</td><td>INT</td><td>1 = most recent</td></tr>
+        <tr><td>weighted_score</td><td>DECIMAL(8,2)</td><td>Computed weighted contribution</td></tr>
+        <tr><td>batting_lineup_score</td><td>DECIMAL(5,2)</td><td>Lineup quality at time of match</td></tr>
+      </table>
+
+      <h2>7.6 Table: player_form_scores</h2>
+      <table class="info-table">
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td>id</td><td>BIGINT PK AUTO</td><td>Auto increment</td></tr>
+        <tr><td>player_id</td><td>BIGINT FK</td><td>References players.id</td></tr>
+        <tr><td>format</td><td>ENUM</td><td>T20I / ODI / TEST</td></tr>
+        <tr><td>form_score</td><td>DECIMAL(5,2)</td><td>Final normalized 0–100 score</td></tr>
+        <tr><td>raw_score</td><td>DECIMAL(10,2)</td><td>Pre-normalization raw score</td></tr>
+        <tr><td>consistency_bonus</td><td>DECIMAL(5,2)</td><td>Bonus applied</td></tr>
+        <tr><td>matches_considered</td><td>INT</td><td>Actual N matches used</td></tr>
+        <tr><td>insufficient_data</td><td>BOOLEAN</td><td>True if fewer than 5 matches</td></tr>
+        <tr><td>calculated_at</td><td>TIMESTAMP</td><td>When this score was computed</td></tr>
+        <tr><td>window_size</td><td>INT</td><td>Default 10</td></tr>
+      </table>
+    </div>
+
+    <!-- SECTION 8 -->
+    <div class="section" id="s8">
+      <div class="section-header">
+        <div class="section-num">08</div>
+        <div class="section-title">Redis Caching Strategy</div>
+      </div>
+
+      <h2>8.1 What Gets Cached</h2>
+      <table class="info-table">
+        <tr><th>Data</th><th>Reason</th></tr>
+        <tr><td>Player Form Score</td><td>Per player, per format — most frequently read</td></tr>
+        <tr><td>Leaderboard</td><td>Top 10 per format — read on every page load</td></tr>
+        <tr><td>Player Profile</td><td>Full profile including last 10 match breakdown</td></tr>
+        <tr><td>Search Index</td><td>All player names for fast autocomplete</td></tr>
+        <tr><td>Bowling Attack Scores</td><td>Per match — needed during algorithm recalculation</td></tr>
+      </table>
+
+      <h2>8.2 Redis Key Naming Convention</h2>
+      <div class="code-block formula">Player Form Score:
+  KEY: cricform:player:{playerId}:form:{format}
+  e.g: cricform:player:1413:form:ODI
+  TTL: 86400 seconds (24 hours)
+
+Leaderboard:
+  KEY: cricform:leaderboard:{type}:{format}
+  e.g: cricform:leaderboard:batters:T20I
+  TTL: 86400 seconds (24 hours)
+
+Player Profile:
+  KEY: cricform:player:{playerId}:profile
+  TTL: 86400 seconds (24 hours)
+
+Search Index:
+  KEY: cricform:search:index
+  TTL: 604800 seconds (7 days)
+
+Bowling Attack Score per Match:
+  KEY: cricform:match:{matchId}:bowling_attack
+  TTL: 604800 seconds (7 days)
+
+Last Updated Timestamp:
+  KEY: cricform:last_refresh
+  TTL: no expiry (manually updated by scheduler)</div>
+
+      <h2>8.3 RedisConfig.java</h2>
+      <div class="code-block">@Configuration
+public class RedisConfig {
+  @Bean
+  public RedisTemplate&lt;String, Object&gt; redisTemplate(RedisConnectionFactory factory) {
+    RedisTemplate&lt;String, Object&gt; template = new RedisTemplate&lt;&gt;();
+    template.setConnectionFactory(factory);
+    template.setKeySerializer(new StringRedisSerializer());
+    template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+    return template;
+  }
+}</div>
+
+      <h2>8.4 Cache Invalidation Strategy</h2>
+      <ul class="bullet-list">
+        <li>After each nightly scheduler run: delete all cricform:player:* and cricform:leaderboard:* keys</li>
+        <li>After deletion: immediately repopulate all keys with fresh calculated scores</li>
+        <li>If API call fails during ingestion: do NOT invalidate cache — serve stale data</li>
+        <li>Stale data indicator: compare cricform:last_refresh timestamp with current time on every API response</li>
+      </ul>
+
+      <h2>8.5 Cache Miss Handling</h2>
+      <div class="code-block formula">On cache miss for player form score:
+  1. Query player_form_scores table in MySQL
+  2. If found: populate Redis cache, return data
+  3. If not found: trigger async recalculation for this player
+  4. Return 202 Accepted: "Score being calculated, retry in 30 seconds"
+
+On cache miss for leaderboard:
+  1. Query top 10 from player_form_scores ordered by form_score DESC
+  2. Populate Redis cache
+  3. Return data immediately</div>
+    </div>
+
+    <!-- SECTION 9 -->
+    <div class="section" id="s9">
+      <div class="section-header">
+        <div class="section-num">09</div>
+        <div class="section-title">Scheduled Jobs</div>
+      </div>
+
+      <h2>9.1 DailyRefreshScheduler.java</h2>
+      <div class="code-block">@Component
+public class DailyRefreshScheduler {
+
+  @Scheduled(cron = "${cricform.scheduler.cron}")  // midnight daily
+  public void runDailyRefresh() {
+    Step 1: dataIngestionService.runFullIngestionCycle()
+    Step 2: formScoreService.recalculateAllScores()
+    Step 3: cacheService.invalidateAllFormScores()
+    Step 4: cacheService.repopulateAllFormScores()
+    Step 5: cacheService.updateLastRefreshTimestamp()
+  }
+}</div>
+
+      <h2>9.2 Full Ingestion Cycle</h2>
+      <div class="code-block formula">DataIngestionService.runFullIngestionCycle():
+
+  1. Call CricketApiService.fetchRecentInternationalSeries()
+     - Fetch last 90 days of series
+     - Extract all matchIds from all series
+
+  2. For each matchId:
+     a. Check if match already exists in matches table
+     b. If exists and ingested_at &lt; 7 days ago: SKIP
+     c. If new or recent: fetch full scorecard
+     d. Parse batting innings → upsert batting_innings table
+     e. Parse bowling innings → upsert bowling_innings table
+     f. Upsert match record in matches table
+     g. Upsert player records in players table
+
+  3. Rate limiting: add 500ms delay between each API call
+  4. On API error: log error, continue with next matchId</div>
+
+      <h2>9.3 Score Recalculation Cycle</h2>
+      <div class="code-block formula">FormScoreService.recalculateAllScores():
+
+  ITERATION 0 — Bootstrap bowler scores:
+    For each active bowler, for each format:
+      Calculate raw bowler form score (wickets + economy only)
+      No batting lineup multiplier in iteration 0
+      Store in memory: Map&lt;Long, Map&lt;String, Double&gt;&gt;
+
+  ITERATION 1 — Calculate batter scores:
+    For each active batter, for each format:
+      Fetch last N batting_innings records
+      For each innings: get BowlingAttackScore using iteration 0 bowler scores
+      Apply full formula with all multipliers
+      Store in memory map
+
+  ITERATION 2 — Recalculate bowler scores:
+    For each active bowler, for each format:
+      Fetch last N bowling_innings records
+      For each innings: get BattingLineupScore using iteration 1 batter scores
+      Apply full formula
+      Store as FINAL bowler score
+
+  NORMALIZATION:
+    Normalize all batter scores to 0-100
+    Normalize all bowler scores to 0-100
+
+  PERSIST:
+    Upsert all scores into player_form_scores table</div>
+    </div>
+
+    <!-- SECTION 10 -->
+    <div class="section" id="s10">
+      <div class="section-header">
+        <div class="section-num">10</div>
+        <div class="section-title">Frontend Architecture: React</div>
+      </div>
+
+      <h2>10.1 Project Structure</h2>
+      <div class="code-block">cricform-frontend/
+  src/
+    App.jsx
+    main.jsx
+    api/
+      cricformApi.js
+    pages/
+      LeaderboardPage.jsx
+      PlayerProfilePage.jsx
+      SearchPage.jsx
+    components/
+      Navbar.jsx
+      FormatTabs.jsx
+      LeaderboardTable.jsx
+      PlayerCard.jsx
+      FormScoreGauge.jsx
+      PerformanceBarChart.jsx
+      ScoreBreakdown.jsx
+      SearchBar.jsx
+      StaleDataBanner.jsx
+      LoadingSpinner.jsx
+      ErrorMessage.jsx
+    hooks/
+      useLeaderboard.js
+      usePlayerProfile.js
+      useSearch.js
+    context/
+      FormatContext.jsx
+    utils/
+      scoreColor.js
+      formatDate.js
+      truncateName.js</div>
+
+      <h2>10.2 Dependencies (package.json)</h2>
+      <div class="code-block json">"dependencies": {
+  "react": "^18.x",
+  "react-dom": "^18.x",
+  "react-router-dom": "^6.x",
+  "axios": "^1.x",
+  "recharts": "^2.x",
+  "tailwindcss": "^3.x",
+  "@tailwindcss/forms": "^0.5.x"
+}</div>
+
+      <h2>10.3 LeaderboardPage.jsx</h2>
+      <div class="code-block formula">Route: /  (main landing page)
+
+Layout:
+  &lt;Navbar /&gt;
+  &lt;StaleDataBanner /&gt;  (only if data is stale)
+  &lt;h1&gt; CricForm — Player Form Tracker &lt;/h1&gt;
+  &lt;FormatTabs /&gt;  (T20I / ODI / Test)
+  Two columns:
+    Left:  &lt;LeaderboardTable type="batters" format={selectedFormat} /&gt;
+    Right: &lt;LeaderboardTable type="bowlers" format={selectedFormat} /&gt;
+  &lt;SearchBar placeholder="Search any player..." /&gt;
+
+State: selectedFormat from FormatContext
+API: GET /api/leaderboard/batters?format={format}
+     GET /api/leaderboard/bowlers?format={format}</div>
+
+      <h2>10.4 PlayerProfilePage.jsx</h2>
+      <div class="code-block formula">Route: /player/:playerId
+
+Layout:
+  &lt;Navbar /&gt;
+  Player header: name, team, role
+  Three &lt;FormScoreGauge /&gt; side by side: T20I | ODI | Test
+  &lt;FormatTabs /&gt; to switch detailed view
+  For selected format:
+    &lt;PerformanceBarChart /&gt;  (last 10 match scores)
+    &lt;ScoreBreakdown /&gt;  (table: match, opponent, runs, attack score)
+  If all-rounder: toggle "Batting / Bowling" to switch view
+
+API: GET /api/players/{playerId}/profile
+     GET /api/players/{playerId}/history?format={format}&window=10</div>
+
+      <h2>10.5 FormScoreGauge.jsx</h2>
+      <div class="code-block formula">Props: { score: number, format: string, insufficientData: boolean }
+
+Renders: SVG circular gauge arc
+Color zones:
+  0-30:   #EF5350  (red)    Poor Form
+  30-50:  #FF7043  (orange) Below Average
+  50-65:  #FDD835  (yellow) Average
+  65-80:  #66BB6A  (green)  Good Form
+  80-100: #2E7D32  (dark green) Excellent Form
+
+If insufficientData = true: gray gauge, show "N/A"
+Center: score number (large) + format label (small)</div>
+
+      <h2>10.6 LeaderboardTable.jsx</h2>
+      <div class="code-block formula">Props: { type: "batters"|"bowlers", format: "T20I"|"ODI"|"Test" }
+
+Columns: Rank | Player Name | Team | Form Score | Trend
+  Rank 1: gold medal icon
+  Rank 2: silver medal icon
+  Rank 3: bronze medal icon
+  Form Score: colored badge using scoreColor utility
+  Trend: UP ↑ (green) / DOWN ↓ (red) / STABLE — (gray)
+  Click player name: navigate to /player/{playerId}
+
+Loading: skeleton rows
+Error: &lt;ErrorMessage /&gt;</div>
+
+      <h2>10.7 cricformApi.js</h2>
+      <div class="code-block">import axios from 'axios';
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+const api = axios.create({ baseURL: BASE_URL });
+
+export const getLeaderboard = (type, format) =>
+  api.get(`/api/leaderboard/${type}?format=${format}`);
+
+export const getPlayerProfile = (playerId) =>
+  api.get(`/api/players/${playerId}/profile`);
+
+export const getPlayerHistory = (playerId, format, window) =>
+  api.get(`/api/players/${playerId}/history?format=${format}&window=${window}`);
+
+export const searchPlayers = (query) =>
+  api.get(`/api/search?q=${encodeURIComponent(query)}&limit=10`);
+
+export const getPlayerFormScore = (playerId, format) =>
+  api.get(`/api/players/${playerId}/form?format=${format}`);</div>
+
+      <h2>10.8 FormatContext.jsx</h2>
+      <div class="code-block">export const FormatContext = createContext();
+
+export const FormatProvider = ({ children }) => {
+  const [selectedFormat, setSelectedFormat] = useState('ODI');
+  return (
+    &lt;FormatContext.Provider value={{ selectedFormat, setSelectedFormat }}&gt;
+      {children}
+    &lt;/FormatContext.Provider&gt;
+  );
+};
+
+// Usage in any component:
+const { selectedFormat, setSelectedFormat } = useContext(FormatContext);</div>
+    </div>
+
+    <!-- SECTION 11 -->
+    <div class="section" id="s11">
+      <div class="section-header">
+        <div class="section-num">11</div>
+        <div class="section-title">Build Order: Phase by Phase</div>
+      </div>
+
+      <p>Follow this exact order when building with Codex or any AI assistant. Each phase is independently testable before moving to the next.</p>
+
+      <div class="phase-grid">
+        <div class="phase-card">
+          <div class="phase-num">PHASE 01</div>
+          <div class="phase-title">Database & Models</div>
+          <ul>
+            <li>Create MySQL database: cricform</li>
+            <li>Create Spring Boot project + all dependencies</li>
+            <li>Create all @Entity classes (Section 7)</li>
+            <li>Create all @Repository interfaces</li>
+            <li>Verify tables auto-created by Hibernate</li>
+          </ul>
+        </div>
+        <div class="phase-card">
+          <div class="phase-num">PHASE 02</div>
+          <div class="phase-title">Cricket API Integration</div>
+          <ul>
+            <li>Create RestTemplateConfig.java</li>
+            <li>Create CricketApiService.java (4 methods)</li>
+            <li>Create DataIngestionService.java</li>
+            <li>Test: ingest 5 matches, verify MySQL data</li>
+          </ul>
+        </div>
+        <div class="phase-card">
+          <div class="phase-num">PHASE 03</div>
+          <div class="phase-title">Algorithm Services</div>
+          <ul>
+            <li>BowlingAttackScoreService.java</li>
+            <li>BattingLineupScoreService.java</li>
+            <li>BatterFormScoreService.java</li>
+            <li>BowlerFormScoreService.java</li>
+            <li>FormScoreService.java (2-iteration loop)</li>
+            <li>JUnit tests for algorithm</li>
+          </ul>
+        </div>
+        <div class="phase-card">
+          <div class="phase-num">PHASE 04</div>
+          <div class="phase-title">Redis Caching</div>
+          <ul>
+            <li>RedisConfig.java</li>
+            <li>CacheService.java (all methods)</li>
+            <li>Integrate cache into FormScoreService</li>
+            <li>Verify Redis keys + TTL after recalculation</li>
+          </ul>
+        </div>
+        <div class="phase-card">
+          <div class="phase-num">PHASE 05</div>
+          <div class="phase-title">REST Controllers</div>
+          <ul>
+            <li>PlayerController.java (3 endpoints)</li>
+            <li>LeaderboardController.java (3 endpoints)</li>
+            <li>SearchController.java</li>
+            <li>GlobalExceptionHandler.java</li>
+            <li>SwaggerConfig.java</li>
+            <li>Test via Swagger UI</li>
+          </ul>
+        </div>
+        <div class="phase-card">
+          <div class="phase-num">PHASE 06</div>
+          <div class="phase-title">Scheduler</div>
+          <ul>
+            <li>DailyRefreshScheduler.java</li>
+            <li>Manual trigger for testing</li>
+            <li>Verify full cycle completes</li>
+          </ul>
+        </div>
+        <div class="phase-card">
+          <div class="phase-num">PHASE 07</div>
+          <div class="phase-title">React Frontend</div>
+          <ul>
+            <li>Vite + React + Tailwind setup</li>
+            <li>cricformApi.js + FormatContext</li>
+            <li>All components (Section 10 order)</li>
+            <li>All pages: Leaderboard, Profile, Search</li>
+            <li>React Router setup</li>
+            <li>.env with API base URL</li>
+          </ul>
+        </div>
+        <div class="phase-card">
+          <div class="phase-num">PHASE 08</div>
+          <div class="phase-title">Final Polish</div>
+          <ul>
+            <li>CORS config in Spring Boot</li>
+            <li>Loading skeleton states in React</li>
+            <li>Error boundaries</li>
+            <li>Run all JUnit tests</li>
+            <li>Full end-to-end test</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<div class="footer">
+  CricForm v1.0 — Full-Stack Project Specification &nbsp;·&nbsp; Java · Spring Boot · React · MySQL · Redis · RapidAPI
+</div>
+
+<script>
+  // Active nav highlight on scroll
+  const sections = document.querySelectorAll('.section');
+  const navItems = document.querySelectorAll('.nav-item');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navItems.forEach(n => n.classList.remove('active'));
+        const id = entry.target.id;
+        const active = document.querySelector(`.nav-item[href="#${id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { threshold: 0.3 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
